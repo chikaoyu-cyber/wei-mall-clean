@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>我的购物车 - 微商城</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" type="text/css" href="./css/flow.css">
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="top-left"><span>欢迎来到微商城！</span><span class="dot">|</span><span class="auth-slot"></span></div>
+      <div class="links">
+        <a href="/">首页</a><span class="dot">|</span>
+        <a href="/search.html">去购物</a><span class="dot">|</span>
+        <a href="/cart.html">我的购物车</a><span class="dot">|</span>
+        <a href="/myOrder.html">我的订单</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="wrap">
+      <a href="/" aria-label="微商城首页"><img class="brand-logo" src="./img/logo.png" alt="微商城"></a>
+      <div class="page-title">我的购物车</div>
+      <div class="mast-actions">
+        <a class="btn-ghost" href="/search.html">去购物</a>
+        <a class="btn-ghost" href="/myOrder.html">我的订单</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flow-main">
+    <div class="wrap">
+
+      <div class="steps">
+        <div class="step on"><span class="no">1</span>购物车<span class="bar"></span></div>
+        <div class="step"><span class="no">2</span>确认订单<span class="bar"></span></div>
+        <div class="step"><span class="no">3</span>支付<span class="bar"></span></div>
+        <div class="step"><span class="no">4</span>完成</div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <strong>购物车商品</strong>
+          <span class="hint" v-if="carts.length">共 {{carts.length}} 种商品 · 勾选后可结算</span>
+        </div>
+
+        <template v-if="!empty && carts.length">
+          <div class="cart-th cart-grid">
+            <div><input class="checkbox" type="checkbox" v-model="selectAll" title="全选"></div>
+            <div>商品</div>
+            <div>单价（元）</div>
+            <div>数量</div>
+            <div>小计（元）</div>
+            <div>操作</div>
+          </div>
+
+          <div class="cart-row cart-grid" v-for="(c, i) in carts" :key="c.id">
+            <div>
+              <input class="checkbox" type="checkbox" v-model="selectedCarts" :value="c"
+                     :disabled="c.status !== 1 || c.stock <= c.num">
+            </div>
+            <div class="goods-cell">
+              <img :src="c.image" :alt="c.name">
+              <div>
+                <div class="name">{{c.name}}</div>
+                <div class="spec">
+                  <span v-for="(v, k) in parseSpec(c.spec)" :key="k">{{v}}　</span>
+                </div>
+                <div class="warn" v-if="c.status !== 1">商品已下架</div>
+                <div class="warn" v-else-if="c.num > c.stock">商品库存不足</div>
+                <div class="spec" v-if="c.newPrice && c.newPrice < c.price">比加入时便宜 ￥{{util.formatPrice(c.price - c.newPrice)}}</div>
+              </div>
+            </div>
+            <div class="cell-price">￥{{util.formatPrice(c.newPrice || c.price)}}</div>
+            <div>
+              <div class="qty">
+                <button type="button" @click="decrement(c)">−</button>
+                <input type="text" v-model="c.num" @blur="watchNum(c)" :disabled="c.num > c.stock">
+                <button type="button" @click="increment(c)">+</button>
+              </div>
+            </div>
+            <div class="cell-sum">￥{{util.formatPrice((c.newPrice || c.price) * c.num)}}</div>
+            <div><a class="link" href="javascript:void(0)" @click="deleteCart(i)">删除</a></div>
+          </div>
+        </template>
+
+        <div class="empty-state" v-else-if="empty">
+          <div class="badge">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+              <path d="M2 3h3l2.6 11h11l2-8H6"/>
+            </svg>
+          </div>
+          <h3>购物车还是空的</h3>
+          <p>去挑几件喜欢的好物吧</p>
+          <a class="btn btn-primary" href="/search.html">去购物</a>
+        </div>
+        <div class="empty-state" v-else>正在加载购物车…</div>
+
+        <div class="checkout-bar" v-if="!empty && carts.length">
+          <span class="tip" v-if="tip">{{tip}}</span>
+          <span class="picked">已选择 <b>{{selectedCarts.length}}</b> 件商品</span>
+          <span class="total">合计 <b>￥{{util.formatPrice(totalPrice)}}</b></span>
+          <button class="btn btn-primary btn-lg" type="button" :disabled="selectedCarts.length === 0" @click="toOrderInfo">去结算</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="f-brand">
+        <strong>微商城</strong><small>WEI MALL</small><p>好物优选 · 轻松购</p>
+      </div>
+    </div>
+    <div class="f-bottom">© 2026 微商城 WEI MALL · 演示项目</div>
+  </footer>
+</div>
+
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/common.js"></script>
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      util,
+      carts: [],
+      selectedCarts: [],
+      enableCarts: [],
+      selectAll: true,
+      empty: false,
+      tip: ""
+    },
+    created() {
+      util.store.set("return-url", location.href);
+      if (!util.isLogin()) { location.href = "/login.html"; return; }
+      this.loadCarts();
+    },
+    methods: {
+      loadCarts() { this.handleLoginCarts(); },
+      handleLoginCarts() {
+        axios.get("/carts").then(resp => {
+          this.carts = (resp && resp.length) ? resp : [];
+          this.empty = this.carts.length === 0;
+          this.refreshSelectedCarts();
+        }).catch(() => {
+          this.empty = true;
+          this.tip = "购物车加载失败，请刷新重试";
+        });
+      },
+      increment(c) {
+        if (c.num >= c.stock) { this.tip = "已到库存上限"; return; }
+        axios.put("/carts", {id: c.id, num: c.num + 1})
+          .then(() => { this.tip = ""; this.handleLoginCarts(); })
+          .catch(() => this.tip = "操作失败，请稍后重试");
+      },
+      decrement(c) {
+        if (c.num <= 1) return;
+        axios.put("/carts", {id: c.id, num: c.num - 1})
+          .then(() => { this.tip = ""; this.handleLoginCarts(); })
+          .catch(() => this.tip = "操作失败，请稍后重试");
+      },
+      deleteCart(i) {
+        axios.delete("/carts/" + this.carts[i].id)
+          .then(() => { this.tip = ""; this.handleLoginCarts(); })
+          .catch(() => this.tip = "删除失败，请稍后重试");
+      },
+      toOrderInfo() {
+        if (!this.selectedCarts.length) { this.tip = "请先勾选要结算的商品"; return; }
+        util.store.set("selectedCarts", this.selectedCarts);
+        location.href = "/order-confirm.html";
+      },
+      watchNum(c) {
+        if (c.num > c.stock) { c.num = c.stock; this.tip = "数量不能超过库存"; }
+      },
+      parseSpec(str) {
+        try { return str ? JSON.parse(str) : {}; } catch (e) { return {}; }
+      },
+      refreshSelectedCarts() {
+        this.enableCarts = this.carts.filter(c => c.status === 1 && c.stock >= c.num);
+        this.selectedCarts = this.enableCarts.slice();
+        this.selectAll = true;
+      }
+    },
+    watch: {
+      selectAll(val) {
+        if (val) this.selectedCarts = this.enableCarts.slice();
+        else if (this.selectedCarts.length === this.enableCarts.length) this.selectedCarts = [];
+      },
+      selectedCarts: {
+        deep: true,
+        handler(val) {
+          if (val.length === this.enableCarts.length && !this.selectAll) this.selectAll = true;
+          if (val.length !== this.enableCarts.length && this.selectAll) this.selectAll = false;
+        }
+      }
+    },
+    computed: {
+      totalPrice() {
+        return this.selectedCarts.map(c => c.num * (c.newPrice || c.price)).reduce((a, b) => a + b, 0);
+      }
+    }
+  });
+</script>
+<script src="./js/auth.js"></script>
+</body>
+</html>

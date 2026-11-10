@@ -1,0 +1,14 @@
+* text=auto
+
+# 大体积数据脚本不参与 diff
+*.sql -diff
+*.jmx -diff
+
+# 二进制
+*.ez binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary

@@ -1,0 +1,151 @@
+.logoArea {
+	height: 84px;
+	background: #fff
+}
+
+/* 背景铺满整行，避免 1200px 容器两侧出现色带断层 */
+.loginArea {
+	height: 487px;
+	background: #3a1478 url(../img/loginbg.png) no-repeat center top;
+	background-size: 100% 100%
+}
+
+.copyright {
+	text-align: center;
+	line-height: 24px
+}
+
+.banner {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 10px
+}
+
+.banner .logo img {
+	width: 150px;
+	height: auto
+}
+
+.login {
+	height: 487px
+}
+
+.loginform {
+	width: 380px;
+	background: #fff;
+	float: right;
+	top: 45px;
+	position: relative;
+	padding: 22px 24px 26px;
+	border-radius: 14px;
+	box-shadow: 0 18px 48px rgba(28, 8, 66, .30)
+}
+
+img {
+	display: block;
+	margin: 0 auto
+}
+
+/* 只保留账户登录后的标题 */
+.login-title {
+	margin: 0;
+	text-align: center;
+	font-size: 22px;
+	letter-spacing: 4px;
+	font-weight: 700;
+	color: #3a1478;
+	font-family: 微软雅黑, sans-serif
+}
+
+.login-title-line {
+	width: 46px;
+	height: 3px;
+	margin: 12px auto 20px;
+	border-radius: 2px;
+	background: linear-gradient(90deg, #7b2fe8, #c2185b)
+}
+
+.login-msg {
+	display: block;
+	text-align: center;
+	font-size: 13px;
+	color: #c2185b
+}
+
+.sui-form {
+	margin-top: 15px
+}
+
+span.loginname {
+	background-image: url(../img/icons.png);
+	background-position: -10px -201px
+}
+
+.sui-form .input-prepend {
+	margin-bottom: 16px
+}
+
+.sui-form .input-prepend .add-on {
+	padding: 6px 5px;
+	background-color: #ede4f7;
+	width: 25px;
+	height: 23px;
+	*float: left
+}
+
+.sui-form input[type=text], .sui-form input[type=password] {
+	height: 23px
+}
+
+.sui-form input.span2 {
+	width: 284px;
+	*float: left
+}
+
+.loginpwd {
+	background-image: url(../img/icons.png);
+	background-position: -72px -201px;
+	display: block;
+	width: 25px;
+	height: 23px
+}
+
+.setting {
+	position: relative;
+	margin: 0 0 25px
+}
+
+.setting .checkbox.inline input {
+	accent-color: #7b2fe8;
+	vertical-align: middle
+}
+
+/* 紫 → 玫红渐变按钮，与背景同一色系 */
+.logined .sui-btn.btn-danger {
+	background-color: #c2185b;
+	background-image: linear-gradient(90deg, #7b2fe8 0%, #b8268c 55%, #c2185b 100%);
+	color: #fff;
+	padding: 10px 6px;
+	border: none;
+	border-radius: 6px;
+	font-size: 16px;
+	font-family: 微软雅黑, sans-serif;
+	word-spacing: 4px;
+	box-shadow: 0 6px 16px rgba(123, 47, 232, .25);
+	transition: opacity .2s, transform .2s
+}
+
+.logined .sui-btn.btn-danger:hover {
+	opacity: .9;
+	transform: translateY(-1px)
+}
+
+.login-foot {
+	margin-top: 22px;
+	text-align: center;
+	font-size: 12px;
+	letter-spacing: 1px;
+	color: #a99bc4
+}

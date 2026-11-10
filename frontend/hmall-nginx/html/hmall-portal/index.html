@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>微商城 - 好物优选 · 轻松购</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" type="text/css" href="./css/home.css">
+</head>
+<body>
+
+<!-- 顶部：只保留能正常跳转的入口 -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="top-left"><span>欢迎来到微商城！</span><span class="dot">|</span><span class="auth-slot"></span></div>
+    <div class="links">
+      <a href="/">首页</a><span class="dot">|</span>
+      <a href="/search.html">去购物</a><span class="dot">|</span>
+      <a href="/cart.html">我的购物车</a><span class="dot">|</span>
+      <a href="/myOrder.html">我的订单</a>
+    </div>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <a href="/" aria-label="微商城首页"><img class="brand-logo" src="./img/logo.png" alt="微商城"></a>
+
+    <div class="mast-actions">
+      <a class="cart-entry" href="/cart.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+          <path d="M2 3h3l2.6 11h11l2-8H6"/>
+        </svg>
+        我的购物车
+      </a>
+      <a class="cart-entry" href="/myOrder.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="3" width="16" height="18" rx="2"/>
+          <path d="M8 8h8M8 12h8M8 16h5"/>
+        </svg>
+        我的订单
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- 主视觉 -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">WEI MALL · 在线购物</span>
+      <h1>微商城，让购物<br><em>更简单一点</em></h1>
+      <p class="lead">
+        一个清爽好逛的在线购物空间：浏览商品、加入购物车、下单支付，
+        每一步都简单直接。登录后还能随时查看自己的购物车与订单状态。
+      </p>
+      <div class="actions">
+        <a class="btn btn-soft" href="/search.html">去购物 →</a>
+      </div>
+      <div class="hero-meta">
+        <div><b>8万+</b>在售商品</div>
+        <div><b>3 步</b>完成下单</div>
+        <div><b>4 项</b>核心能力</div>
+      </div>
+    </div>
+
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 420 380" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="heroGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8b46f0"/>
+            <stop offset="1" stop-color="#d6246e"/>
+          </linearGradient>
+        </defs>
+        <circle cx="215" cy="190" r="158" fill="#ffffff" opacity=".08"/>
+        <circle cx="215" cy="190" r="134" fill="none" stroke="#ffffff" stroke-opacity=".35" stroke-width="2" stroke-dasharray="7 10"/>
+        <circle cx="215" cy="190" r="104" fill="url(#heroGrad)"/>
+        <path d="M190 178 v-16 a25 25 0 0 1 50 0 v16" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+        <rect x="170" y="172" width="90" height="88" rx="14" fill="#ffffff"/>
+        <path d="M190 214 l16 16 l30 -34" fill="none" stroke="#c2185b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+        <g transform="rotate(-14 78 92)">
+          <rect x="28" y="52" width="108" height="78" rx="12" fill="#ffffff" opacity=".92"/>
+          <circle cx="56" cy="82" r="14" fill="#ede4f7"/>
+          <rect x="80" y="76" width="42" height="6" rx="3" fill="#d9c9f5"/>
+          <rect x="80" y="90" width="30" height="6" rx="3" fill="#e9dffb"/>
+          <rect x="42" y="108" width="78" height="6" rx="3" fill="#f0e9fb"/>
+        </g>
+        <g transform="rotate(12 344 286)">
+          <rect x="300" y="252" width="96" height="70" rx="12" fill="#ffffff" opacity=".90"/>
+          <circle cx="326" cy="280" r="12" fill="#f7dce9"/>
+          <rect x="346" y="274" width="36" height="6" rx="3" fill="#f3c9dc"/>
+          <rect x="312" y="302" width="70" height="6" rx="3" fill="#f9e7f0"/>
+        </g>
+        <path d="M356 60 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5 z" fill="#ffffff" opacity=".80"/>
+        <path d="M60 290 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#ffffff" opacity=".60"/>
+        <circle cx="382" cy="172" r="5" fill="#ffffff" opacity=".55"/>
+        <circle cx="40" cy="180" r="4" fill="#ffffff" opacity=".50"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 关于微商城 -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">ABOUT WEI MALL</div>
+      <h2>关于微商城</h2>
+      <div class="bar"></div>
+      <p>
+        微商城是一个聚焦「好逛、好选、好买」的轻量购物平台。页面简洁、路径清晰，
+        把从挑选商品到完成支付的流程压缩到最短，让每一次购物都省心。
+      </p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="ico">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 l2.8 6 6.5 .6 -5 4.3 1.5 6.4 -5.8 -3.4 -5.8 3.4 1.5 -6.4 -5 -4.3 6.5 -.6z"/>
+          </svg>
+        </div>
+        <h3>精选好物</h3>
+        <p>覆盖数码、家居、服饰等常见品类，支持关键词检索与分类、价格筛选。</p>
+      </div>
+      <div class="card">
+        <div class="ico">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+            <path d="M2 3h3l2.6 11h11l2-8H6"/>
+          </svg>
+        </div>
+        <h3>便捷购物车</h3>
+        <p>看中的商品先收进购物车，数量随时调整，登录后自动保留。</p>
+      </div>
+      <div class="card">
+        <div class="ico">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2 L5 13h6l-1 9 9-12h-6z"/>
+          </svg>
+        </div>
+        <h3>快速下单</h3>
+        <p>购物车一键结算，订单与支付状态实时同步，流程不绕弯。</p>
+      </div>
+      <div class="card">
+        <div class="ico">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 L20 6v6c0 5-3.5 8.2-8 10-4.5-1.8-8-5-8-10V6z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <h3>安全保障</h3>
+        <p>独立账号体系，登录状态统一管理，购物记录跟着账号走。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 三步购物 -->
+<section class="section steps">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">HOW IT WORKS</div>
+      <h2>三步开启购物</h2>
+      <div class="bar"></div>
+      <p>从逛到买，只需要三个简单的步骤。</p>
+    </div>
+
+    <div class="steps-list">
+      <div class="step">
+        <div class="num">01</div>
+        <h3>挑选商品</h3>
+        <p>在商品列表里按关键词、分类或价格筛选，找到想要的那一件。</p>
+        <a href="/search.html">去购物 →</a>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h3>加入购物车</h3>
+        <p>把看中的商品收进购物车，数量与规格随时可以调整。</p>
+        <a href="/cart.html">查看购物车 →</a>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h3>结算支付</h3>
+        <p>确认商品后提交订单，完成支付即可，状态自动更新。</p>
+        <a href="/cart.html">前往结算 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 底部引导 -->
+<section class="cta">
+  <div class="wrap">
+    <div>
+      <h2>准备好逛逛了吗？</h2>
+      <p>好物已经上架，点击「去购物」就能开始挑选。</p>
+    </div>
+    <a class="btn btn-light" href="/search.html">去购物 →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-brand">
+      <strong>微商城</strong>
+      <small>WEI MALL</small>
+      <p>好物优选 · 轻松购</p>
+    </div>
+  </div>
+  <div class="f-bottom">© 2026 微商城 WEI MALL · 演示项目</div>
+</footer>
+
+<script>
+  // 记录登录后返回地址（与登录页 util.store 的格式保持一致）
+  try { sessionStorage.setItem("return-url", JSON.stringify(location.href)); } catch (e) {}
+</script>
+<script src="./js/auth.js"></script>
+</body>
+</html>

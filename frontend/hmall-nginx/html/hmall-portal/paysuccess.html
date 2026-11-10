@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>支付成功 - 微商城</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" type="text/css" href="./css/flow.css">
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="top-left"><span>欢迎来到微商城！</span><span class="dot">|</span><span class="auth-slot"></span></div>
+      <div class="links">
+        <a href="/">首页</a><span class="dot">|</span>
+        <a href="/search.html">去购物</a><span class="dot">|</span>
+        <a href="/cart.html">我的购物车</a><span class="dot">|</span>
+        <a href="/myOrder.html">我的订单</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="wrap">
+      <a href="/" aria-label="微商城首页"><img class="brand-logo" src="./img/logo.png" alt="微商城"></a>
+      <div class="page-title">支付结果</div>
+      <div class="mast-actions">
+        <a class="btn-ghost" href="/myOrder.html">我的订单</a>
+        <a class="btn-ghost" href="/search.html">去购物</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flow-main">
+    <div class="wrap">
+
+      <div class="steps">
+        <div class="step done"><span class="no">✓</span>购物车<span class="bar"></span></div>
+        <div class="step done"><span class="no">✓</span>确认订单<span class="bar"></span></div>
+        <div class="step done"><span class="no">✓</span>支付<span class="bar"></span></div>
+        <div class="step on"><span class="no">✓</span>完成</div>
+      </div>
+
+      <div class="card">
+        <div class="result">
+          <div class="badge">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12.5l5 5L20 6.5"/>
+            </svg>
+          </div>
+          <h2>恭喜您，支付成功啦！</h2>
+          <div class="sub">订单已确认，我们会尽快为您安排发货</div>
+
+          <div class="result-list">
+            <p>订单号 <b>{{orderId || "—"}}</b></p>
+            <p>支付方式 <b>{{paymentTypes[order.paymentType - 1] || "扣减余额"}}</b></p>
+            <p>支付金额 <b class="money">￥{{util.formatPrice(order.totalFee || 0)}} 元</b></p>
+            <p>预计送达 <b>{{sendDate}}</b></p>
+          </div>
+
+          <div class="btn-row">
+            <a class="btn btn-primary btn-lg" :href="'/myOrder.html?orderId=' + orderId">查看订单</a>
+            <a class="btn btn-plain btn-lg" href="/search.html">继续购物</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="f-brand">
+        <strong>微商城</strong><small>WEI MALL</small><p>好物优选 · 轻松购</p>
+      </div>
+    </div>
+    <div class="f-bottom">© 2026 微商城 WEI MALL · 演示项目</div>
+  </footer>
+</div>
+
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/common.js"></script>
+<script>
+  new Vue({
+    el: "#app",
+    data() {
+      return {
+        util,
+        order: {},
+        orderId: util.getUrlParam("orderId"),
+        paymentTypes: ["支付宝支付", "微信支付", "扣减余额"]
+      };
+    },
+    created() {
+      util.store.set("return-url", location.href);
+      if (!util.store.get("user-info")) { location.href = "/login.html"; return; }
+      if (!this.orderId) return;
+      util.rememberOrder(this.orderId);
+      axios.get("/orders/" + this.orderId)
+        .then(resp => { this.order = resp; })
+        .catch(() => {});
+    },
+    computed: {
+      sendDate() {
+        // 演示环境按「下单后 3 天」估算，不用历史订单的旧时间，避免出现过去的日期
+        const d = new Date();
+        d.setDate(d.getDate() + 3);
+        return d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日";
+      }
+    }
+  });
+</script>
+<script src="./js/auth.js"></script>
+</body>
+</html>

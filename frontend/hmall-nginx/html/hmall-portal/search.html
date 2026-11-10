@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>去购物 - 微商城</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" type="text/css" href="./css/shop.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 顶部：与首页同一套结构 -->
+  <div class="topbar">
+    <div class="wrap">
+      <div class="top-left"><span>欢迎来到微商城！</span><span class="dot">|</span><span class="auth-slot"></span></div>
+      <div class="links">
+        <a href="/">首页</a><span class="dot">|</span>
+        <a href="/search.html">去购物</a><span class="dot">|</span>
+        <a href="/cart.html">我的购物车</a><span class="dot">|</span>
+        <a href="/myOrder.html">我的订单</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="wrap">
+      <a href="/" aria-label="微商城首页"><img class="brand-logo" src="./img/logo.png" alt="微商城"></a>
+      <div class="search-bar">
+        <input type="text" v-model="params.key" @keyup="handleKeyUp($event)" placeholder="搜索商品名称 / 品牌 / 关键词" title="输入关键字搜索商品">
+        <button type="button" @click="handleSearch">搜索</button>
+      </div>
+      <div class="mast-actions">
+        <a class="cart-entry" href="/cart.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+            <path d="M2 3h3l2.6 11h11l2-8H6"/>
+          </svg>
+          我的购物车
+        </a>
+        <a class="cart-entry" href="/myOrder.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="3" width="16" height="18" rx="2"/>
+            <path d="M8 8h8M8 12h8M8 16h5"/>
+          </svg>
+          我的订单
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="shop-main">
+    <div class="wrap">
+
+      <!-- 筛选面板：分类 / 品牌 / 价格 固定三行，选中只高亮，不会少行 -->
+      <div class="panel">
+        <div class="panel-head">
+          <strong>筛选条件</strong>
+          <span class="clear" v-if="hasFilters" @click="clearFilters">清除全部 ×</span>
+          <span class="clear" v-else style="color:#a99bc4;cursor:default">点击标签即可筛选</span>
+        </div>
+        <div class="filter-row" v-for="group in filterGroups" :key="group.key">
+          <div class="filter-label">{{group.label}}</div>
+          <div class="filter-chips">
+            <a class="chip" :class="{on: isSelected(group.key, o)}"
+               href="javascript:void(0)"
+               v-for="(o, i) in group.options" :key="i"
+               @click="toggleFilter(group.key, o)">{{o.label}}</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 排序 + 分页 -->
+      <div class="toolbar">
+        <div class="sorts">
+          <a class="sort-btn" :class="{on: selectedSortItem===i}" href="javascript:void(0)"
+             v-for="(item, i) in sortItems" :key="i" @click="handleSort(i)">
+            {{item.text}}<span v-if="item.key">{{item.desc ? ' ↓' : ' ↑'}}</span>
+          </a>
+        </div>
+        <div class="pager">
+          <span>共 <b>{{total}}</b> 件商品</span>
+          <span><b>{{params.pageNo}}</b> / {{totalPage || 1}}</span>
+          <button class="page-btn" :disabled="params.pageNo <= 1" @click="prePage">&lt;</button>
+          <button class="page-btn" :disabled="params.pageNo >= totalPage" @click="nextPage">&gt;</button>
+        </div>
+      </div>
+
+      <!-- 商品列表 -->
+      <div class="goods" v-if="items.length">
+        <div class="good" v-for="item in items" :key="item.id">
+          <img class="thumb" :src="item.image" :alt="item.name">
+          <div class="price"><small>¥</small>{{util.formatPrice(item.price)}}</div>
+          <div class="name" v-html="item.name"></div>
+          <div class="meta">
+            {{comment(item.commentCount)}} 条评价 · 近1月销量 {{comment(item.sold)}}
+          </div>
+          <div class="acts">
+            <button class="btn-buy" @click="toOrderConfirm(item)">立刻购买</button>
+            <button class="btn-cart" @click="add2Cart(item)">加入购物车</button>
+          </div>
+        </div>
+      </div>
+      <div class="empty" v-else-if="loadError">商品加载失败，请稍后刷新重试。</div>
+      <div class="empty" v-else>正在加载商品…</div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="f-brand">
+        <strong>微商城</strong>
+        <small>WEI MALL</small>
+        <p>好物优选 · 轻松购</p>
+      </div>
+    </div>
+    <div class="f-bottom">© 2026 微商城 WEI MALL · 演示项目</div>
+  </footer>
+</div>
+
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/common.js"></script>
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      util,
+      filterNames: { category: "分类", brand: "品牌", price: "价格" },
+      prices: [
+        { value: '0-100', label: '100以下' },
+        { value: '100-299', label: '100~299元' },
+        { value: '300-599', label: '300~599元' },
+        { value: '600-899', label: '600~899元' },
+        { value: '900-1599', label: '900~1599元' },
+        { value: '1600-0', label: '1600以上元' }
+      ],
+      categories: ['手机', '曲面电视', '拉杆箱', '休闲鞋', '硬盘', '真皮包'],
+      brands: ['希捷', '小米', '华为', 'oppo', '尤妮佳', '莎米特', '意尔康', '新秀丽', 'Apple', '锤子'],
+      sortItems: [
+        { key: "", text: "默认", desc: true },
+        { key: "sold", text: "销量", desc: true },
+        { key: "price", text: "价格", desc: true }
+      ],
+      selectedSortItem: 0,
+      items: [],
+      total: 0,
+      totalPage: 0,
+      loadError: false,
+      params: {
+        key: "",
+        pageNo: 1,
+        pageSize: 20,
+        sortBy: "",
+        isAsc: true,
+        filters: {}
+      }
+    },
+    computed: {
+      // 固定三组，不随选中状态增减 —— 点击分类不会「少一行」
+      filterGroups() {
+        const asOptions = arr => arr.map(v => ({ value: v, label: v }));
+        return [
+          { key: 'category', label: '分类', options: asOptions(this.categories) },
+          { key: 'brand', label: '品牌', options: asOptions(this.brands) },
+          { key: 'price', label: '价格', options: this.prices.map(p => ({ value: p.value, label: p.label })) }
+        ];
+      },
+      hasFilters() {
+        return Object.keys(this.params.filters).length > 0;
+      }
+    },
+    created() {
+      util.store.set("return-url", location.href);
+      const key = util.getUrlParam("key");
+      if (key && key !== "null") this.params.key = key;
+      this.search();
+    },
+    methods: {
+      getParams() {
+        const { filters: { price: ps, ...fs }, ...params } = this.params;
+        for (let k in fs) params[k] = fs[k];
+        if (ps) {
+          const arr = ps.value.split("-");
+          params.minPrice = parseInt(arr[0]) * 100;
+          const max = parseInt(arr[1]) * 100;
+          params.maxPrice = max === 0 ? 999999 : max;
+        }
+        const sortItem = this.sortItems[this.selectedSortItem];
+        params.isAsc = !sortItem.desc;
+        params.sortBy = sortItem.key;
+        return params;
+      },
+      search() {
+        this.loadError = false;
+        axios.get("/search/list", { params: this.getParams() })
+          .then(resp => {
+            this.items = resp.list || [];
+            this.total = resp.total || 0;
+            this.totalPage = Math.ceil(this.total / this.params.pageSize);
+          })
+          .catch(() => {
+            this.items = [];
+            this.total = 0;
+            this.totalPage = 0;
+            this.loadError = true;
+          });
+      },
+      handleSearch() {
+        this.params.pageNo = 1;
+        this.search();
+      },
+      handleKeyUp(e) {
+        if (e.keyCode === 13) this.handleSearch();
+      },
+      handleSort(i) {
+        if (i === this.selectedSortItem) {
+          if (i > 0) this.sortItems[i].desc = !this.sortItems[i].desc;
+        } else {
+          this.selectedSortItem = i;
+        }
+        this.params.pageNo = 1;
+        this.search();
+      },
+      isSelected(key, option) {
+        const cur = this.params.filters[key];
+        if (!cur) return false;
+        const v = (typeof cur === 'object') ? cur.value : cur;
+        return v === option.value;
+      },
+      toggleFilter(key, option) {
+        const obj = Object.assign({}, this.params.filters);
+        const cur = obj[key];
+        const curValue = cur && (typeof cur === 'object' ? cur.value : cur);
+        if (curValue === option.value) {
+          delete obj[key];
+        } else {
+          // 价格要带 value/label 供 getParams 解析区间，分类/品牌传字符串
+          obj[key] = key === 'price' ? { value: option.value, label: option.label } : option.value;
+        }
+        this.params.filters = obj;
+        this.params.pageNo = 1;
+        this.search();
+      },
+      clearFilters() {
+        this.params.filters = {};
+        this.params.pageNo = 1;
+        this.search();
+      },
+      prePage() {
+        if (this.params.pageNo > 1) { this.params.pageNo--; this.search(); }
+      },
+      nextPage() {
+        if (this.params.pageNo < this.totalPage) { this.params.pageNo++; this.search(); }
+      },
+      comment(count) {
+        count = count || 0;
+        return count < 10000 ? count : Math.floor(count / 10000) + "万+";
+      },
+      toOrderConfirm(item) {
+        // 结算页只认 selectedCarts，直接购买也要按购物车项的格式写入
+        // 登录检查交给结算页：它会记住 return-url，登录后自动回到本页
+        const cart = {
+          id: item.id,
+          itemId: Number(item.id) || item.id,
+          image: item.image,
+          name: item.name,
+          spec: item.spec || "{}",
+          price: item.price,
+          newPrice: item.price,
+          num: 1,
+          stock: item.stock || 99,
+          status: 1
+        };
+        util.store.set("selectedCarts", [cart]);
+        location.href = "/order-confirm.html";
+      },
+      add2Cart(item) {
+        let { id, ...param } = item;
+        param.itemId = id;
+        param.num = 1;
+        if (!util.isLogin()) {
+          location.href = "/login.html";
+        }
+        axios.post("/carts", param)
+          .then(() => { location.href = "/cart.html"; })
+          .catch(err => {
+            console.log(err.response.data);
+            alert(err.response.data.msg || "添加购物车失败");
+          });
+      }
+    }
+  });
+</script>
+<script src="./js/auth.js"></script>
+</body>
+</html>

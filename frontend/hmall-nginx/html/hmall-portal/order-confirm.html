@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>确认订单 - 微商城</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" type="text/css" href="./css/flow.css">
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="top-left"><span>欢迎来到微商城！</span><span class="dot">|</span><span class="auth-slot"></span></div>
+      <div class="links">
+        <a href="/">首页</a><span class="dot">|</span>
+        <a href="/search.html">去购物</a><span class="dot">|</span>
+        <a href="/cart.html">我的购物车</a><span class="dot">|</span>
+        <a href="/myOrder.html">我的订单</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="wrap">
+      <a href="/" aria-label="微商城首页"><img class="brand-logo" src="./img/logo.png" alt="微商城"></a>
+      <div class="page-title">确认订单</div>
+      <div class="mast-actions">
+        <a class="btn-ghost" href="/search.html">去购物</a>
+        <a class="btn-ghost" href="/cart.html">返回购物车</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flow-main">
+    <div class="wrap">
+
+      <div class="steps">
+        <div class="step done"><span class="no">✓</span>购物车<span class="bar"></span></div>
+        <div class="step on"><span class="no">2</span>确认订单<span class="bar"></span></div>
+        <div class="step"><span class="no">3</span>支付<span class="bar"></span></div>
+        <div class="step"><span class="no">4</span>完成</div>
+      </div>
+
+      <template v-if="items.length">
+        <!-- 收货地址 -->
+        <div class="card">
+          <div class="card-head">
+            <strong>收货人信息</strong>
+            <span class="hint">点击卡片选择收货地址</span>
+          </div>
+          <div class="card-body">
+            <div class="addr-grid" v-if="addressList.length">
+              <div class="addr" :class="{on: addr.id === params.addressId}"
+                   v-for="addr in addressList" :key="addr.id" @click="params.addressId = addr.id">
+                <div class="who">{{addr.contact}}<span class="tag" v-if="addr.isDefault">默认</span></div>
+                <div class="detail">{{addr.province}}{{addr.city}}{{addr.town}}{{addr.street}}</div>
+                <div class="mobile">{{handleMobile(addr.mobile)}}</div>
+              </div>
+            </div>
+            <div class="addr-empty" v-else>正在加载收货地址…</div>
+            <div class="pay-note" v-if="addressTip">{{addressTip}}</div>
+          </div>
+        </div>
+
+        <!-- 商品清单 -->
+        <div class="card">
+          <div class="card-head">
+            <strong>送货清单</strong>
+            <span class="hint">共 {{totalNum}} 件商品</span>
+          </div>
+          <div class="card-body">
+            <div class="line-item line-grid" v-for="item in items" :key="item.id">
+              <img :src="item.image" :alt="item.name">
+              <div>
+                <div class="name">{{item.name}}</div>
+                <div class="spec">
+                  <span v-for="(v, k) in parseJson(item.spec)" :key="k">{{k}}：{{v}}　</span>
+                </div>
+              </div>
+              <div class="price">￥{{util.formatPrice(item.newPrice || item.price)}}</div>
+              <div class="num">× {{item.num}}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 金额 -->
+        <div class="card">
+          <div class="card-head"><strong>费用合计</strong></div>
+          <div class="summary">
+            <div class="row"><span>{{totalNum}} 件商品，总金额</span><b>￥{{totalPrice}}</b></div>
+            <div class="row final"><span>应付金额</span><b>￥{{totalPrice}}</b></div>
+            <div class="receiver">寄送至：{{address || "请选择收货地址"}}</div>
+          </div>
+          <div class="submit-bar">
+            <button class="btn btn-primary btn-lg" type="button" :disabled="submitting" @click="toPay">
+              {{submitting ? "提交中…" : "提交订单"}}
+            </button>
+          </div>
+          <div class="pay-note" style="padding:0 22px 20px;text-align:right" v-if="tip">{{tip}}</div>
+        </div>
+      </template>
+
+      <div class="card" v-else>
+        <div class="empty-state">
+          <div class="badge">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2h9l4 4v16H6z"/><path d="M15 2v5h4"/><path d="M9 12h7M9 16h7"/>
+            </svg>
+          </div>
+          <h3>没有待结算的商品</h3>
+          <p>请先在购物车勾选商品，再回来确认订单</p>
+          <a class="btn btn-primary" href="/cart.html">返回购物车</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="f-brand">
+        <strong>微商城</strong><small>WEI MALL</small><p>好物优选 · 轻松购</p>
+      </div>
+    </div>
+    <div class="f-bottom">© 2026 微商城 WEI MALL · 演示项目</div>
+  </footer>
+</div>
+
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/common.js"></script>
+<script>
+  const demoAddress = [
+    {id: 61, contact: "李佳星", mobile: "13301212233", province: "上海", city: "上海", town: "浦东新区", street: "航头镇航头路", isDefault: true},
+    {id: 63, contact: "李小龙", mobile: "13301212233", province: "广东", city: "佛山", town: "永春", street: "永春武馆", isDefault: false}
+  ];
+  new Vue({
+    el: "#app",
+    data: {
+      util,
+      addressList: [],
+      items: [],
+      params: {details: [], paymentType: 3, addressId: 61},
+      addressTip: "",
+      tip: "",
+      submitting: false
+    },
+    created() {
+      util.store.set("return-url", location.href);
+      if (!util.store.get("user-info")) { location.href = "/login.html"; return; }
+      this.items = util.store.get("selectedCarts") || [];
+      this.getAddress();
+    },
+    methods: {
+      getAddress() {
+        axios.get("/addresses").then(resp => {
+          if (resp && resp.length) {
+            this.addressList = resp;
+            if (!resp.some(a => a.id === this.params.addressId)) this.params.addressId = resp[0].id;
+          } else {
+            this.addressList = demoAddress;
+            this.addressTip = "当前账号没有收货地址，已使用演示地址。";
+          }
+        }).catch(() => {
+          this.addressList = demoAddress;
+          this.addressTip = "地址服务暂不可用，已使用演示地址。";
+        });
+      },
+      toPay() {
+        if (!this.addressList.some(a => a.id === this.params.addressId)) {
+          this.tip = "请先选择收货地址"; return;
+        }
+        this.submitting = true;
+        this.tip = "";
+        this.params.details = this.items.map(({itemId, num}) => ({itemId, num}));
+        axios.post("/orders", this.params).then(orderId => {
+          util.rememberOrder(orderId);
+          util.store.del("selectedCarts");
+          location.href = "/pay.html?id=" + orderId;
+        }).catch(err => {
+          this.submitting = false;
+          this.tip = "下单失败，请稍后重试（" + (err.response ? err.response.status : "网络异常") + "）";
+        });
+      },
+      handleMobile(mobile) {
+        return mobile ? mobile.substring(0, 4) + "****" + mobile.substring(8) : "";
+      },
+      parseJson(str) {
+        try { return str ? JSON.parse(str) : {}; } catch (e) { return {}; }
+      }
+    },
+    computed: {
+      address() {
+        const a = this.addressList.find(x => x.id === this.params.addressId);
+        if (!a) return "";
+        return a.province + a.city + a.town + a.street + " 收件人：" + a.contact + " " + this.handleMobile(a.mobile);
+      },
+      totalNum() {
+        return this.items.reduce((n, i) => n + Number(i.num || 0), 0);
+      },
+      totalPrice() {
+        let total = 0;
+        this.items.forEach(i => total += (i.newPrice || i.price) * i.num);
+        return util.formatPrice(total);
+      }
+    }
+  });
+</script>
+<script src="./js/auth.js"></script>
+</body>
+</html>

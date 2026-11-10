@@ -1,0 +1,38 @@
+[
+  {
+    "dataId": "cart-service.yaml",
+    "group": "DEFAULT_GROUP",
+    "bytes": 28,
+    "file": "cart-service.yaml"
+  },
+  {
+    "dataId": "gateway-routes.json",
+    "group": "DEFAULT_GROUP",
+    "bytes": 1129,
+    "file": "gateway-routes.json"
+  },
+  {
+    "dataId": "shared-jdbc.yaml",
+    "group": "DEFAULT_GROUP",
+    "bytes": 529,
+    "file": "shared-jdbc.yaml"
+  },
+  {
+    "dataId": "shared-log.yaml",
+    "group": "DEFAULT_GROUP",
+    "bytes": 136,
+    "file": "shared-log.yaml"
+  },
+  {
+    "dataId": "shared-seata.yaml",
+    "group": "DEFAULT_GROUP",
+    "bytes": 592,
+    "file": "shared-seata.yaml"
+  },
+  {
+    "dataId": "shared-swagger.yaml",
+    "group": "DEFAULT_GROUP",
+    "bytes": 396,
+    "file": "shared-swagger.yaml"
+  }
+]
